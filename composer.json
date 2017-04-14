@@ -1,0 +1,29 @@
+{
+    "name": "yongtiger/yii2-tree-manager",
+    "description": "",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","tree","manager","adjacency list","nested sets","nested intervals","materialized path","flat table"],
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/yongtiger/yii2-tree-manager/issues",
+        "forum": "http://www.yiiframework.com/forum/",
+        "source": "https://github.com/yongtiger/yii2-tree-manager"
+    },
+    "authors": [
+        {
+            "name": "Yong Tiger",
+            "email": "tigeryang.brainbook@outlook.com",
+            "homepage": "http://www.branbook.cc/yongtiger"
+        }
+    ],
+    "homepage" : "http://www.branbook.cc",
+    "require": {
+        "php": ">=5.5",
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "yongtiger\\tree\\": "src"
+        }
+    }
+}
