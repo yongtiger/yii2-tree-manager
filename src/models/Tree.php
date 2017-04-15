@@ -20,5 +20,5 @@ use yongtiger\tree\traits\TreeTrait;
  */
 class Tree extends ActiveRecord
 {
-    use TreeTrait;
+    use TreeTrait;  ///you can use `\yongtiger\tree\models\TreeTrait` instead of extending from `\yongtiger\tree\models\Tree`
 }

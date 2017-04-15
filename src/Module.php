@@ -27,6 +27,59 @@ class Module extends \yii\base\Module
     public static $moduleName = 'treemanager';
 
     /**
+     * @var array tree model class behaviors
+     */
+    public $behaviors = [];
+
+    /**
+     * @var bool whether tree model class operate all transactions.
+     *
+     * Must set to `true` while using `creocoder/yii2-nested-sets` and `paulzi/yii2-nested-sets`.
+     * @see https://github.com/creocoder/yii2-nested-sets, https://github.com/paulzi/yii2-nested-sets
+     */
+    public $isOpAllTransactions = true;
+
+    /**
+     * @var string tree query class name
+     *
+     * The [[TreeQuery]] class supports for both adjacency list and nested sets [[Tree]] models.
+     * You can use another one according to different algorithms:
+     *
+     * For `creocoder\nestedsets\NestedSetsQueryBehavior`:
+     *
+     * ```php
+     * class TreeQuery extends ActiveQuery
+     * {
+     *      public function behaviors() {
+     *          return [
+     *              \creocoder\nestedsets\NestedSetsQueryBehavior::className(),
+     *          ];
+     *      }
+     * }
+     * ```
+     *
+     * For `paulzi\nestedsets\NestedSetsQueryTrait`:
+     *
+     * ```php
+     * class TreeQuery extends ActiveQuery
+     * {
+     *     use \paulzi\nestedsets\NestedSetsQueryTrait;
+     * }
+     * ```
+     *
+     * For `paulzi\nestedsets\AdjacencyListQueryTrait`:
+     *
+     * ```php
+     * class TreeQuery extends ActiveQuery
+     * {
+     *     use \paulzi\adjacencyList\AdjacencyListQueryTrait;
+     * }
+     * ```
+     *
+     */
+    public $queryClass;
+
+    /**
      * @return static
      */
     public static function instance()

@@ -1,5 +1,7 @@
 # Development roadmap
 
+## v0.0.1 (reconstruct: Tree, TreeTrait, TreeQuery)
+
 
 ## v0.0.0 (initial commit)
 
