@@ -1,5 +1,8 @@
 # Development roadmap
 
+## v0.0.2 (composer.json: add creocoder/yii2-nested-sets)
+
+
 ## v0.0.1 (reconstruct: Tree, TreeTrait, TreeQuery)
 
 
