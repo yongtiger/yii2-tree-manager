@@ -22,6 +22,7 @@ class TreeViewAsset extends AssetBundle
     public $sourcePath = '@yongtiger/tree/assets';
     public $js = [
         'js/jquery.mjs.nestedSortable.js',
+        'js/tree-view.js',
     ];
     public $css = [
         // 'css/tree-view-example.css',

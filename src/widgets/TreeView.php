@@ -146,18 +146,27 @@ class TreeView extends Widget
      */
     public function run()
     {
+        $this->registerScript();
+        return $this->renderNodes($this->nodes);
+    }
+
+    /**
+     * Registers Script.
+     */
+    protected function registerScript()
+    {
         $view = $this->getView();
         TreeViewAsset::register($view);
 
         ///[v0.0.13 (ADD# scriptOptions, scriptEventOptions)]
         $selector = ArrayHelper::remove($this->scriptOptions, 'selector', 'ol.sortable');
         $view->registerJs("$('{$selector}').nestedSortable(" . Json::encode($this->scriptOptions) . ");");
-
-        return $this->renderNodes($this->nodes);
     }
 
     /**
      * Renders tree nodes.
+     * @param array $nodes
+     * @return string the rendering result.
      */
     protected function renderNodes($nodes)
     {
