@@ -91,7 +91,7 @@ echo \yongtiger\tree\widgets\TreeView::widget([
 ```
 
 
-### Config of `jquery.mjs.nestedSortable.js`:
+### `jquery-ui version 1.11.4` options:
 
 ```
 ///jquery-ui version 1.11.4 options
@@ -118,8 +118,12 @@ revert: 250,                                ///defaults to false
 tolerance: 'pointer',                       ///defaults to "intersect" 
 toleranceElement: '> div',                  ///defaults to null 
 // zIndex: 1000,
+```
 
-///jquery.mjs.nestedSortable.js v 2.0b1 options
+
+### `jquery.mjs.nestedSortable.js v 2.0b1` options:
+
+```
 // disableParentChange: false,
 // doNotClear: false,
 // expandOnHover: 700,
