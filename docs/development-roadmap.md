@@ -1,6 +1,6 @@
 # Development roadmap
 
-## v0.0.4 (FIX# toggle(): remove out `hidden`)
+## v0.0.4 (FIX# toggle(): remove out class hidden)
 
 * `\widgets\TreeView.php`
 
