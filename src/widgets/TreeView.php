@@ -66,7 +66,7 @@ class TreeView extends Widget
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = [];   ///[v0.0.8 (container tag and options)]
+    public $htmlOptions = [];   ///[v0.0.8 (container tag and options)]
 
     /**
      * @var array list of nodes in the TreeView widget. Each array element represents a single
@@ -183,14 +183,14 @@ JS
         if (!empty($nodes)) {
 
             ///[v0.0.8 (container tag and options)]
-            $options = $this->options;
-            $tag = ArrayHelper::remove($options, 'tag', 'ol');
-            if (empty($options['class'])) {
-                $options['class'] = 'sortable';
+            $htmlOptions = $this->htmlOptions;
+            $tag = ArrayHelper::remove($htmlOptions, 'tag', 'ol');
+            if (empty($htmlOptions['class'])) {
+                $htmlOptions['class'] = 'sortable';
             } else {
-                $options['class'] .= ' sortable';
+                $htmlOptions['class'] .= ' sortable';
             }
-            $lines[] =  Html::beginTag($tag, $options);
+            $lines[] =  Html::beginTag($tag, $htmlOptions);
 
             foreach ($nodes as $node) {
                 if (isset($node['visible']) && !$node['visible']) {
@@ -222,9 +222,9 @@ JS
         $lines = [];
 
         ///[v0.0.7 (node tag and options)]
-        $options = array_merge($this->nodeOptions, ArrayHelper::getValue($node, 'options', []));
-        $tag = ArrayHelper::remove($options, 'tag', 'li');
-        $lines[] =  Html::beginTag($tag, $options);
+        $nodeOptions = array_merge($this->nodeOptions, ArrayHelper::getValue($node, 'options', []));
+        $tag = ArrayHelper::remove($nodeOptions, 'tag', 'li');
+        $lines[] =  Html::beginTag($tag, $nodeOptions);
 
         $lines[] =  Html::tag('div', $this->renderNodeName($node));
         if (!empty($node['nodes'])) {

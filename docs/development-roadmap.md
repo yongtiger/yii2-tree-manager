@@ -1,5 +1,10 @@
 # Development roadmap
 
+## v0.0.10 (CHG# change options into htmlOptions)
+
+* `\widgets\TreeView.php` (62, 185)
+
+
 ## v0.0.9 (FIX# Html::endTag)
 
 * `\widgets\TreeView.php` (201, 234)
