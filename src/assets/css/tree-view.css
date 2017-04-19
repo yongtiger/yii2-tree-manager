@@ -1,3 +1,6 @@
+.placeholder {
+    outline: 1px dashed #4183C4;
+}
 ol {
     margin: 0;
     padding: 0;
@@ -61,3 +64,4 @@ ol.sortable {
 .sortable li.mjs-nestedSortable-expanded > div > .disclose > span:before {
     content:'- ';
 }
+

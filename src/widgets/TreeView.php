@@ -16,93 +16,35 @@ use Yii;
 use yii\base\Widget;
 use yii\web\View;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
+use yii\web\JsExpression;
 use yongtiger\tree\TreeViewAsset;
 
 /**
  * Class TreeView
  *
- * [Usages]:
+ * Usages:
  *
  * ```php
  * echo \yongtiger\tree\widgets\TreeView::widget([
- *   'nodes' => $menuItems,
+ *     'nodes' => $menuItems,
+ *     'htmlOptions' => [  ///optional
+ *         'tag' => 'ol',
+ *         'class' => 'myclass',
+ *     ],
+ *     'nodeOptions' => [  ///optional
+ *         'tag' => 'li',
+ *         'class' => 'myclass',
+ *     ],
+ *     'scriptOptions' => [    ///optional
+ *         'startCollapsed' => true,
+ *     ],
+ *     'scriptEventOptions' => [ ///optional
+ *         'change' => "function(){ console.log('Relocated item'); }",
+ *     ],
  * ]);
- * ```
- *
- * [References]
- *
- * Example of `nestedSortable` html code:
- *
- * ```
- * <ol class="sortable">
- *     <li id="list_368">
- *         <div>   <span class="disclose"><span></span></span>Driving Directions</div>
- *     </li>
- *     <li id="list_369">
- *         <div>   <span class="disclose"><span></span></span>Food Menu</div>
- *         <ol class="sortable">
- *             <li id="list_373">
- *                 <div>   <span class="disclose"><span></span></span>Meals</div>
- *             </li>
- *             <li id="list_374">
- *                 <div>   <span class="disclose"><span></span></span>Pizza & Pasta</div>
- *             </li>
- *         </ol>
- *     </li>
- * </ol>
- * ```
- *
- * Config of `jquery.mjs.nestedSortable.js`:
- *
- * ```
- *     ///jquery-ui version 1.11.4 options
- *     // appendTo: "parent",
- *     // axis: false,
- *     // connectWith: false,
- *     // containment: false,
- *     // cursor: "auto",
- *     // cursorAt: false,
- *     // dropOnEmpty: true,
- *     forcePlaceholderSize: true,                 ///defaults to false 
- *     // forceHelperSize: false,
- *     // grid: false,
- *     handle: 'div',                              ///defaults to false
- *     helper: 'clone',                            ///defaults to "original"
- *     items: 'li',                                ///defaults to "> *"
- *     opacity: .6,                                ///defaults to false 
- *     placeholder: 'placeholder',                 ///defaults to false 
- *     revert: 250,                                ///defaults to false 
- *     // scroll: true,
- *     // scrollSensitivity: 20,
- *     // scrollSpeed: 20,
- *     // scope: "default",
- *     tolerance: 'pointer',                       ///defaults to "intersect" 
- *     toleranceElement: '> div',                  ///defaults to null 
- *     // zIndex: 1000,
- * 
- *     ///jquery.mjs.nestedSortable.js v 2.0b1 options
- *     // disableParentChange: false,
- *     // doNotClear: false,
- *     // expandOnHover: 700,
- *     // isAllowed: function() { return true; },
- *     isTree: true,                               ///defaults to false
- *     // listType: "ol",
- *     // maxLevels: 0,
- *     // protectRoot: false,
- *     // rootID: null,
- *     // rtl: false,
- *     // startCollapsed: false,
- *     // tabSize: 20,
- *     // branchClass: "mjs-nestedSortable-branch",
- *     // collapsedClass: "mjs-nestedSortable-collapsed",
- *     // disableNestingClass: "mjs-nestedSortable-no-nesting",
- *     // errorClass: "mjs-nestedSortable-error",
- *     // expandedClass: "mjs-nestedSortable-expanded",
- *     // hoveringClass: "mjs-nestedSortable-hovering",
- *     // leafClass: "mjs-nestedSortable-leaf",
- *     // disabledClass: "mjs-nestedSortable-disabled",
  * ```
  * 
  * @see https://github.com/ilikenwf/nestedSortable
@@ -157,65 +99,46 @@ class TreeView extends Widget
      */
     public $encodeNames = true;
 
+    ///[v0.0.13 (ADD# scriptOptions, scriptEventOptions)]
+    /**
+     * @var array the script options for `jquery.mjs.nestedSortable.js`. The following special options are recognized:
+     *
+     * - selector: string, the selector of the tree container, defaults to "ol.sortable".
+     *
+     */
+    private $_defaultScriptOptions = [
+        'isTree' => true,
+        'startCollapsed' => false,
+        'forcePlaceholderSize' => true,
+        'handle' => 'div',
+        'helper' => 'clone',
+        'items' => 'li',
+        'opacity' => .6,
+        'placeholder' => 'placeholder',
+        'revert' => 250,
+        'tolerance' => 'pointer',
+        'toleranceElement' => '> div',
+    ];
+    public $scriptOptions = [];
+
+    /**
+     * @var array additional script options that can be passed to the constructor of the treeview js object.
+     */
+    public $scriptEventOptions = [
+        'update' => "function(){ console.log('Relocated item'); }",
+    ];
+
     /**
      * @inheritdoc
      */
     public function init()
     {
-        $view = $this->getView();
-        TreeViewAsset::register($view);
-
-        $view->registerJs(<<<JS
-$('ol.sortable').nestedSortable({
-    isTree: true,
-    startCollapsed: false,
-    ///jui options
-    forcePlaceholderSize: true,
-    handle: 'div',
-    helper: 'clone',
-    items: 'li',
-    opacity: .6,
-    placeholder: 'placeholder',
-    revert: 250,
-    tolerance: 'pointer',
-    toleranceElement: '> div',
-
-    change: function(){
-        console.log('Relocated item');
-    }
-});
-
-$('.expandEditor').attr('title','Click to show/hide item editor');
-$('.disclose').attr('title','Click to show/hide children');
-$('.deleteMenu').attr('title', 'Click to delete item.');
-
-$('.disclose').on('click', function() {
-    $(this).closest('li').toggleClass('mjs-nestedSortable-collapsed').toggleClass('mjs-nestedSortable-expanded');
-    $(this).toggleClass('ui-icon-plusthick').toggleClass('ui-icon-minusthick');
-});
-
-$('.expandEditor, .itemTitle').click(function(){
-    var id = $(this).attr('data-id');
-    $('#menuEdit'+id).toggle();
-    $(this).toggleClass('ui-icon-triangle-1-n').toggleClass('ui-icon-triangle-1-s');
-});
-
-$('.deleteMenu').click(function(){
-    var id = $(this).attr('data-id');
-    $('#menuItem_'+id).remove();
-});
-
-$(".collapseAll").on('click', function() {
-    $('.mjs-nestedSortable-branch').addClass('mjs-nestedSortable-collapsed').removeClass('mjs-nestedSortable-expanded');
-    $('.disclose-children').children().removeClass('fa-minus-circle').addClass('fa-plus-circle');
-});
-$(".expandAll").on('click', function() {
-    $('.mjs-nestedSortable-branch').addClass('mjs-nestedSortable-expanded').removeClass('mjs-nestedSortable-collapsed');
-    $('.disclose-children').children().removeClass('fa-plus-circle').addClass('fa-minus-circle');
-});
-
-JS
-);
+        ///[v0.0.13 (ADD# scriptOptions, scriptEventOptions)]
+        $this->scriptOptions = array_merge($this->_defaultScriptOptions, $this->scriptOptions);
+        foreach($this->scriptEventOptions as $key => $event)
+        {
+            $this->scriptOptions[$key] = new JsExpression($event);
+        }
     }
 
     /**
@@ -223,6 +146,13 @@ JS
      */
     public function run()
     {
+        $view = $this->getView();
+        TreeViewAsset::register($view);
+
+        ///[v0.0.13 (ADD# scriptOptions, scriptEventOptions)]
+        $selector = ArrayHelper::remove($this->scriptOptions, 'selector', 'ol.sortable');
+        $view->registerJs("$('{$selector}').nestedSortable(" . Json::encode($this->scriptOptions) . ");");
+
         return $this->renderNodes($this->nodes);
     }
 
