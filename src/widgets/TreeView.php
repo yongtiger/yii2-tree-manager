@@ -59,6 +59,16 @@ use yongtiger\tree\TreeViewAsset;
 class TreeView extends Widget
 {
     /**
+     * @var array the HTML attributes for the tree's container tag. The following special options are recognized:
+     *
+     * - tag: string, defaults to "ol", the tag name of the node container tags. Set to false to disable container tag.
+     *   See also [[\yii\helpers\Html::tag()]].
+     *
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $options = [];   ///[v0.0.8 (container tag and options)]
+
+    /**
      * @var array list of nodes in the TreeView widget. Each array element represents a single
      * tree node which can be either a string or an array with the following structure:
      *
@@ -171,7 +181,17 @@ JS
     {
         $lines = [];
         if (!empty($nodes)) {
-            $lines[] =  Html::beginTag('ol', ['class' => 'sortable']);
+
+            ///[v0.0.8 (container tag and options)]
+            $options = $this->options;
+            $tag = ArrayHelper::remove($options, 'tag', 'ol');
+            if (empty($options['class'])) {
+                $options['class'] = 'sortable';
+            } else {
+                $options['class'] .= ' sortable';
+            }
+            $lines[] =  Html::beginTag($tag, $options);
+
             foreach ($nodes as $node) {
                 if (isset($node['visible']) && !$node['visible']) {
                     continue;
