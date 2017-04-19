@@ -1,5 +1,12 @@
 # Development roadmap
 
+## v0.0.5 (CHG# simple and work sortable)
+
+* @see http://jsfiddle.net/vq9dD/2/
+* `\widgets\TreeView.php`
+* `\assets\css\tree-view.css`
+
+
 ## v0.0.4 (FIX# toggle(): remove out class hidden)
 
 * `\widgets\TreeView.php`

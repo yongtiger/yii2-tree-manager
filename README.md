@@ -1,4 +1,4 @@
-# yii2-tree-manager v0.0.4 (FIX# toggle(): remove out class hidden)
+# yii2-tree-manager v0.0.5 (CHG# simple and work sortable)
 
 [![Latest Stable Version](https://poser.pugx.org/yongtiger/yii2-tree-manager/v/stable)](https://packagist.org/packages/yongtiger/yii2-tree-manager)
 [![Total Downloads](https://poser.pugx.org/yongtiger/yii2-tree-manager/downloads)](https://packagist.org/packages/yongtiger/yii2-tree-manager) 

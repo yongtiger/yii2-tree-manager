@@ -24,8 +24,8 @@ class TreeViewAsset extends AssetBundle
         'js/jquery.mjs.nestedSortable.js',
     ];
     public $css = [
+        // 'css/tree-view-example.css',
         'css/tree-view.css',
-        // 'css/tree.css',
     ];
     public $depends = [
         'yii\jui\JuiAsset',
