@@ -1,5 +1,10 @@
 # Development roadmap
 
+## v0.0.9 (FIX# Html::endTag)
+
+* `\widgets\TreeView.php` (201, 234)
+
+
 ## v0.0.8 (container tag and options)
 
 * `\widgets\TreeView.php` (62, 185)

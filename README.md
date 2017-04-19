@@ -1,4 +1,4 @@
-# yii2-tree-manager v0.0.8 (container tag and options)
+# yii2-tree-manager v0.0.9 (FIX# Html::endTag)
 
 [![Latest Stable Version](https://poser.pugx.org/yongtiger/yii2-tree-manager/v/stable)](https://packagist.org/packages/yongtiger/yii2-tree-manager)
 [![Total Downloads](https://poser.pugx.org/yongtiger/yii2-tree-manager/downloads)](https://packagist.org/packages/yongtiger/yii2-tree-manager) 

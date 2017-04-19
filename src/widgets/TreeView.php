@@ -198,7 +198,7 @@ JS
                 }
                 $lines[] = $this->renderNode($node);
             }
-            $lines[] =  Html::endTag('ol'); 
+            $lines[] =  Html::endTag($tag); 
         }
 
         return implode("\n", $lines);
@@ -231,7 +231,7 @@ JS
             $lines[] =  $this->renderNodes($node['nodes']);
         }
 
-        $lines[] =  Html::endTag('li');
+        $lines[] =  Html::endTag($tag);
 
         return implode("\n", $lines);
     }
