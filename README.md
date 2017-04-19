@@ -94,7 +94,6 @@ echo \yongtiger\tree\widgets\TreeView::widget([
 ### `jquery-ui version 1.11.4` options:
 
 ```
-///jquery-ui version 1.11.4 options
 // appendTo: "parent",
 // axis: false,
 // connectWith: false,
