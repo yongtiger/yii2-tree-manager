@@ -23,7 +23,17 @@ use yongtiger\tree\TreeViewAsset;
 /**
  * Class TreeView
  *
- * Example html code:
+ * [Usages]:
+ *
+ * ```php
+ * echo \yongtiger\tree\widgets\TreeView::widget([
+ *   'nodes' => $menuItems,
+ * ]);
+ * ```
+ *
+ * [References]
+ *
+ * Example of `nestedSortable` html code:
  *
  * ```
  * <ol class="sortable">
@@ -44,14 +54,57 @@ use yongtiger\tree\TreeViewAsset;
  * </ol>
  * ```
  *
- * The following example shows how to use TreeView:
+ * Config of `jquery.mjs.nestedSortable.js`:
  *
- * ```php
- * echo TreeView::widget([
- *   'nodes' => $menuItems,
- * ]);
  * ```
- *
+ *     ///jquery-ui version 1.11.4 options
+ *     // appendTo: "parent",
+ *     // axis: false,
+ *     // connectWith: false,
+ *     // containment: false,
+ *     // cursor: "auto",
+ *     // cursorAt: false,
+ *     // dropOnEmpty: true,
+ *     forcePlaceholderSize: true,                 ///defaults to false 
+ *     // forceHelperSize: false,
+ *     // grid: false,
+ *     handle: 'div',                              ///defaults to false
+ *     helper: 'clone',                            ///defaults to "original"
+ *     items: 'li',                                ///defaults to "> *"
+ *     opacity: .6,                                ///defaults to false 
+ *     placeholder: 'placeholder',                 ///defaults to false 
+ *     revert: 250,                                ///defaults to false 
+ *     // scroll: true,
+ *     // scrollSensitivity: 20,
+ *     // scrollSpeed: 20,
+ *     // scope: "default",
+ *     tolerance: 'pointer',                       ///defaults to "intersect" 
+ *     toleranceElement: '> div',                  ///defaults to null 
+ *     // zIndex: 1000,
+ * 
+ *     ///jquery.mjs.nestedSortable.js v 2.0b1 options
+ *     // disableParentChange: false,
+ *     // doNotClear: false,
+ *     // expandOnHover: 700,
+ *     // isAllowed: function() { return true; },
+ *     isTree: true,                               ///defaults to false
+ *     // listType: "ol",
+ *     // maxLevels: 0,
+ *     // protectRoot: false,
+ *     // rootID: null,
+ *     // rtl: false,
+ *     // startCollapsed: false,
+ *     // tabSize: 20,
+ *     // branchClass: "mjs-nestedSortable-branch",
+ *     // collapsedClass: "mjs-nestedSortable-collapsed",
+ *     // disableNestingClass: "mjs-nestedSortable-no-nesting",
+ *     // errorClass: "mjs-nestedSortable-error",
+ *     // expandedClass: "mjs-nestedSortable-expanded",
+ *     // hoveringClass: "mjs-nestedSortable-hovering",
+ *     // leafClass: "mjs-nestedSortable-leaf",
+ *     // disabledClass: "mjs-nestedSortable-disabled",
+ * ```
+ * 
  * @see https://github.com/ilikenwf/nestedSortable
  * @see http://jsfiddle.net/vq9dD/2/
  * @package yongtiger\tree\widgets
@@ -114,6 +167,9 @@ class TreeView extends Widget
 
         $view->registerJs(<<<JS
 $('ol.sortable').nestedSortable({
+    isTree: true,
+    startCollapsed: false,
+    ///jui options
     forcePlaceholderSize: true,
     handle: 'div',
     helper: 'clone',
@@ -121,13 +177,9 @@ $('ol.sortable').nestedSortable({
     opacity: .6,
     placeholder: 'placeholder',
     revert: 250,
-    tabSize: 25,
     tolerance: 'pointer',
     toleranceElement: '> div',
-    maxLevels: 4,
-    isTree: true,
-    expandOnHover: 700,
-    startCollapsed: false,
+
     change: function(){
         console.log('Relocated item');
     }

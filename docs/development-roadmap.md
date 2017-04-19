@@ -1,5 +1,11 @@
 # Development roadmap
 
+## v0.0.12 (ADD# comment options of jquery.mjs.nestedSortable.js and jquery-ui)
+
+* `\widgets\TreeView.php`
+* `\assets\js\example.html`
+
+
 ## v0.0.11 (ADD# node id)
 
 * `\widgets\TreeView.php` (225)

@@ -1,4 +1,4 @@
-# yii2-tree-manager v0.0.11 (ADD# node id)
+# yii2-tree-manager v0.0.12 (ADD# comment options of jquery.mjs.nestedSortable.js and jquery-ui)
 
 [![Latest Stable Version](https://poser.pugx.org/yongtiger/yii2-tree-manager/v/stable)](https://packagist.org/packages/yongtiger/yii2-tree-manager)
 [![Total Downloads](https://poser.pugx.org/yongtiger/yii2-tree-manager/downloads)](https://packagist.org/packages/yongtiger/yii2-tree-manager) 
