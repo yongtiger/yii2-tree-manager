@@ -70,6 +70,19 @@ class TreeView extends Widget
     public $nodes = [];
 
     /**
+     * @var array list of HTML attributes shared by all tree [[nodes]]. If any individual node
+     * specifies its `options`, it will be merged with this property before being used to generate the HTML
+     * attributes for the node tag. The following special options are recognized:
+     *
+     * - tag: string, defaults to "li", the tag name of the node container tags.
+     *   Set to false to disable container tag.
+     *   See also [[\yii\helpers\Html::tag()]].
+     *
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $nodeOptions = [];   ///[v0.0.7 (node tag and options)]
+
+    /**
      * @var string the template used to render a node name.
      * In this template, the token `{name}` will be replaced with the name of the node.
      * This property will be overridden by the `template` option set in individual nodess via [[nodes]].
@@ -187,11 +200,17 @@ JS
         }
 
         $lines = [];
-        $lines[] =  Html::beginTag('li');
+
+        ///[v0.0.7 (node tag and options)]
+        $options = array_merge($this->nodeOptions, ArrayHelper::getValue($node, 'options', []));
+        $tag = ArrayHelper::remove($options, 'tag', 'li');
+        $lines[] =  Html::beginTag($tag, $options);
+
         $lines[] =  Html::tag('div', $this->renderNodeName($node));
         if (!empty($node['nodes'])) {
             $lines[] =  $this->renderNodes($node['nodes']);
         }
+
         $lines[] =  Html::endTag('li');
 
         return implode("\n", $lines);
