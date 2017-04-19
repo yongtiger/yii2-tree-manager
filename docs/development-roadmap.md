@@ -1,5 +1,10 @@
 # Development roadmap
 
+## v0.0.6 (re-organize codes)
+
+* `\widgets\TreeView.php`
+
+
 ## v0.0.5 (CHG# simple and work sortable)
 
 * @see http://jsfiddle.net/vq9dD/2/

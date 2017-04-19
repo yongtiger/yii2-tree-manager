@@ -12,16 +12,75 @@
 
 namespace yongtiger\tree\widgets;
 
-use yii;
+use Yii;
 use yii\base\Widget;
 use yii\web\View;
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+use yii\base\InvalidConfigException;
 use yongtiger\tree\TreeViewAsset;
 
 /**
  * Class TreeView
+ *
+ * Example html code:
+ *
+ * ```
+ * <ol class="sortable">
+ *     <li id="list_368">
+ *         <div>   <span class="disclose"><span></span></span>Driving Directions</div>
+ *     </li>
+ *     <li id="list_369">
+ *         <div>   <span class="disclose"><span></span></span>Food Menu</div>
+ *         <ol class="sortable">
+ *             <li id="list_373">
+ *                 <div>   <span class="disclose"><span></span></span>Meals</div>
+ *             </li>
+ *             <li id="list_374">
+ *                 <div>   <span class="disclose"><span></span></span>Pizza & Pasta</div>
+ *             </li>
+ *         </ol>
+ *     </li>
+ * </ol>
+ * ```
+ *
+ * The following example shows how to use TreeView:
+ *
+ * ```php
+ * echo TreeView::widget([
+ *   'nodes' => $menuItems,
+ * ]);
+ * ```
+ *
+ * @see https://github.com/ilikenwf/nestedSortable
+ * @see http://jsfiddle.net/vq9dD/2/
+ * @package yongtiger\tree\widgets
  */
 class TreeView extends Widget
 {
+    /**
+     * @var array list of nodes in the TreeView widget. Each array element represents a single
+     * tree node which can be either a string or an array with the following structure:
+     *
+     * - name: string, required, the node name.
+     * - visible: boolean, optional, whether this node is visible. Defaults to true.
+     * - nodes: array|string, optional, the nodes array, or a string representing the node name.
+     * - encode: boolean, optional, whether the node name will be HTML-encoded. If set, supersedes the $encodeNames option for only this node.
+     */
+    public $nodes = [];
+
+    /**
+     * @var string the template used to render a node name.
+     * In this template, the token `{name}` will be replaced with the name of the node.
+     * This property will be overridden by the `template` option set in individual nodess via [[nodes]].
+     */
+    public $nodeNameTemplate = '<span class="disclose"><span></span></span>{name}';
+
+    /**
+     * @var boolean whether the node names should be HTML-encoded.
+     */
+    public $encodeNames = true;
+
     /**
      * @inheritdoc
      */
@@ -29,6 +88,7 @@ class TreeView extends Widget
     {
         $view = $this->getView();
         TreeViewAsset::register($view);
+
         $view->registerJs(<<<JS
 $('.sortable').nestedSortable({
     forcePlaceholderSize: true,
@@ -88,38 +148,68 @@ JS
      */
     public function run()
     {
-        return <<<HTML
-<ol class="sortable">
-    <li id="list_368">
-        <div>   <span class="disclose"><span></span></span>Driving Directions</div>
-    </li>
-    <li id="list_367">
-        <div>   <span class="disclose"><span></span></span>Make a Reservation</div>
-    </li>
-    <li id="list_369">
-        <div>   <span class="disclose"><span></span></span>Food Menu</div>
-        <ol class="sortable">
-            <li id="list_373">
-                <div>   <span class="disclose"><span></span></span>Meals</div>
-            </li>
-            <li id="list_374">
-                <div>   <span class="disclose"><span></span></span>Pizza & Pasta</div>
-            </li>
-            <li id="list_375">
-                <div>   <span class="disclose"><span></span></span>Soup</div>
-            </li>
-        </ol>
-    </li>
-    <li id="list_371">
-        <div>   <span class="disclose"><span></span></span>Drink Menu</div>
-    </li>
-    <li id="list_370">
-        <div>   <span class="disclose"><span></span></span>Gift Cards</div>
-    </li>
-    <li id="list_372">
-        <div>   <span class="disclose"><span></span></span>About Us</div>
-    </li>
-</ol>
-HTML;
+        return $this->renderNodes($this->nodes);
+    }
+
+    /**
+     * Renders tree nodes.
+     */
+    protected function renderNodes($nodes)
+    {
+        $lines = [];
+        if (!empty($nodes)) {
+            $lines[] =  Html::beginTag('ol', ['class' => 'sortable']);
+            foreach ($nodes as $node) {
+                if (isset($node['visible']) && !$node['visible']) {
+                    continue;
+                }
+                $lines[] = $this->renderNode($node);
+            }
+            $lines[] =  Html::endTag('ol'); 
+        }
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Renders a tree node.
+     * @param string|array $node the node to render.
+     * @return string the rendering result.
+     * @throws InvalidConfigException
+     */
+    protected function renderNode($node)
+    {
+        if (is_string($node)) {
+            $node = ['name' => $node];
+        }
+        if (!isset($node['name'])) {
+            throw new InvalidConfigException("The 'name' option is required.");
+        }
+
+        $lines = [];
+        $lines[] =  Html::beginTag('li');
+        $lines[] =  Html::tag('div', $this->renderNodeName($node));
+        if (!empty($node['nodes'])) {
+            $lines[] =  $this->renderNodes($node['nodes']);
+        }
+        $lines[] =  Html::endTag('li');
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Renders a node name.
+     * @param array $node
+     * @return string
+     */
+    protected function renderNodeName($node)
+    {
+        $encodeName = isset($node['encode']) ? $node['encode'] : $this->encodeNames;
+        $name = $encodeName ? Html::encode($node['name']) : $node['name'];
+
+        $template = ArrayHelper::getValue($node, 'template', $this->nodeNameTemplate);
+        return strtr($template, [
+            '{name}' => $name,
+        ]);
     }
 }
