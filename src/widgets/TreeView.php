@@ -113,7 +113,7 @@ class TreeView extends Widget
         TreeViewAsset::register($view);
 
         $view->registerJs(<<<JS
-$('.sortable').nestedSortable({
+$('ol.sortable').nestedSortable({
     forcePlaceholderSize: true,
     handle: 'div',
     helper: 'clone',
@@ -222,7 +222,7 @@ JS
         $lines = [];
 
         ///[v0.0.7 (node tag and options)]
-        $nodeOptions = array_merge($this->nodeOptions, ArrayHelper::getValue($node, 'options', []));
+        $nodeOptions = array_merge(['id' => $node['id']], $this->nodeOptions, ArrayHelper::getValue($node, 'options', []));
         $tag = ArrayHelper::remove($nodeOptions, 'tag', 'li');
         $lines[] =  Html::beginTag($tag, $nodeOptions);
 
