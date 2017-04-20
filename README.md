@@ -1,4 +1,4 @@
-# yii2-tree-manager v0.0.14 (ADD# registerScript, tree-view.js)
+# yii2-tree-manager v0.0.15 (ADD# renderButtons)
 
 [![Latest Stable Version](https://poser.pugx.org/yongtiger/yii2-tree-manager/v/stable)](https://packagist.org/packages/yongtiger/yii2-tree-manager)
 [![Total Downloads](https://poser.pugx.org/yongtiger/yii2-tree-manager/downloads)](https://packagist.org/packages/yongtiger/yii2-tree-manager) 

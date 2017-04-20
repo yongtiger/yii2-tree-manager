@@ -147,11 +147,38 @@ class TreeView extends Widget
     public function run()
     {
         $this->registerScript();
+        $this->renderButtons();
         return $this->renderNodes($this->nodes);
     }
 
     /**
-     * Registers Script.
+     * Renders buttons.
+     */
+    protected function renderButtons()
+    {
+        // echo Html::beginTag('div', ['class' => "{$this->id}-nestable-menu"]);
+        echo Html::beginTag('div', ['class' => "nestable-menu"]);
+        echo Html::beginTag('div', ['class' => 'btn-group']);
+        echo Html::button('Add node', [
+            'data-action' => 'action-create',
+            'class' => 'btn btn-success'
+        ]);
+        echo Html::button('Collapse all', [
+            'id' => 'collapse-all',
+            'class' => 'btn btn-default',
+            'style' => 'display: none',//////////???????
+        ]);
+        echo Html::button('Expand all', [
+            'id' => 'expand-all',
+            'class' => 'btn btn-default',
+            // 'style' => 'display: none',//////////???????
+        ]);
+        echo Html::endTag('div');
+        echo Html::endTag('div');
+    }
+
+    /**
+     * Registers script.
      */
     protected function registerScript()
     {
