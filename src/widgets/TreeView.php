@@ -22,7 +22,6 @@ use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
 use yii\web\JsExpression;
 use yongtiger\tree\TreeViewAsset;
-use rmrevin\yii\fontawesome\FA;
 
 /**
  * Class TreeView
@@ -283,22 +282,38 @@ class TreeView extends Widget
 
         $lines[] = $this->renderNodeName($node);
 
-        $lines[] = Html::beginTag('span', ['class' => 'pull-right']);
-        $lines[] = Html::a(FA::i(FA::_PENCIL), ['update', 'id' => $node['id']], ['class' => 'btn btn-xs btn-primary']);
-        $lines[] = Html::a(FA::i(FA::_PLUS), ['create', 'parent_id' => $node['id']], ['class' => 'btn btn-xs btn-success']);
-        $lines[] = Html::a(FA::i(FA::_TRASH), ['delete', 'id' => $node['id']], [
-            'data' => ['confirm' => Yii::t('app', 'Are you sure you want to delete this item?'), 'method' => 'post',],
-            'class' => 'btn btn-xs btn-danger'
-        ]);
-        $lines[] =  Html::endTag('span');
+        $lines[] = $this->renderButtons($node);
 
-        $lines[] =  Html::endTag('div');
+        $lines[] = Html::endTag('div');
 
         if (!empty($node['nodes'])) {
             $lines[] =  $this->renderNodes($node['nodes']);
         }
 
         $lines[] =  Html::endTag($tag);
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Renders buttons.
+     * @param array $node
+     * @return string
+     */
+    protected function renderButtons($node)
+    {
+        $lines = [];
+
+        $lines[] = Html::beginTag('span', ['class' => 'pull-right']);
+
+        $lines[] = Html::a(Html::tag('span', '', ['class' => "glyphicon glyphicon-pencil"]), ['update', 'id' => $node['id']], ['class' => 'btn btn-xs btn-primary']);
+        $lines[] = Html::a(Html::tag('span', '', ['class' => "glyphicon glyphicon-plus"]), ['create', 'parent_id' => $node['id']], ['class' => 'btn btn-xs btn-success']);
+        $lines[] = Html::a(Html::tag('span', '', ['class' => "glyphicon glyphicon-trash"]), ['delete', 'id' => $node['id']], [
+            'data' => ['confirm' => Yii::t('app', 'Are you sure you want to delete this item?'), 'method' => 'post'],
+            'class' => 'btn btn-xs btn-danger',
+        ]);
+
+        $lines[] =  Html::endTag('span');
 
         return implode("\n", $lines);
     }
