@@ -16,11 +16,13 @@ use Yii;
 use yii\base\Widget;
 use yii\web\View;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
 use yii\web\JsExpression;
 use yongtiger\tree\TreeViewAsset;
+use rmrevin\yii\fontawesome\FA;
 
 /**
  * Class TreeView
@@ -30,7 +32,11 @@ use yongtiger\tree\TreeViewAsset;
  * ```php
  * echo \yongtiger\tree\widgets\TreeView::widget([
  *     'nodes' => $menuItems,
- *     'htmlOptions' => [  ///optional
+ *     'options' => [  ///optional
+ *         'tag' => 'div',
+ *         'class' => 'myclass',
+ *     ],
+ *     'nodesOptions' => [  ///optional
  *         'tag' => 'ol',
  *         'class' => 'myclass',
  *     ],
@@ -38,10 +44,10 @@ use yongtiger\tree\TreeViewAsset;
  *         'tag' => 'li',
  *         'class' => 'myclass',
  *     ],
- *     'scriptOptions' => [    ///optional
+ *     'clientOptions' => [    ///optional
  *         'startCollapsed' => true,
  *     ],
- *     'scriptEventOptions' => [ ///optional
+ *     'clientEventOptions' => [ ///optional
  *         'change' => "function(){ console.log('Relocated item'); }",
  *     ],
  * ]);
@@ -56,12 +62,27 @@ class TreeView extends Widget
     /**
      * @var array the HTML attributes for the tree's container tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "ol", the tag name of the node container tags. Set to false to disable container tag.
+     * - tag: string, defaults to "div", the tag name of the node container tags. Set to false to disable container tag.
      *   See also [[\yii\helpers\Html::tag()]].
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $htmlOptions = [];   ///[v0.0.8 (container tag and options)]
+    public $options = [];
+
+    /**
+     * @var array the client script options for `jquery.mjs.nestedSortable.js`. The following special options are recognized:
+     *
+     * - selector: string, the selector of the tree container, defaults to "ol.sortable".
+     *
+     */
+    public $clientOptions = [];
+
+    /**
+     * @var array additional client options that can be passed to the constructor of the treeview js object.
+     */
+    public $clientEventOptions = [
+        'update' => "function(){ console.log('Relocated item'); }",
+    ];
 
     /**
      * @var array list of nodes in the TreeView widget. Each array element represents a single
@@ -75,6 +96,17 @@ class TreeView extends Widget
     public $nodes = [];
 
     /**
+     * @var array the HTML attributes for the tree's nodes tag. The following special options are recognized:
+     *
+     * - tag: string, defaults to "ol", the tag name of the node container tags. Set to false to disable container tag.
+     *   See also [[\yii\helpers\Html::tag()]].
+     * - class: string, defaults to "sortable", the class name of the nodes tags.
+     *
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $nodesOptions = ['tag' => 'ol', 'class' => 'sortable'];
+
+    /**
      * @var array list of HTML attributes shared by all tree [[nodes]]. If any individual node
      * specifies its `options`, it will be merged with this property before being used to generate the HTML
      * attributes for the node tag. The following special options are recognized:
@@ -85,7 +117,7 @@ class TreeView extends Widget
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $nodeOptions = [];   ///[v0.0.7 (node tag and options)]
+    public $nodeOptions = [];
 
     /**
      * @var string the template used to render a node name.
@@ -99,14 +131,10 @@ class TreeView extends Widget
      */
     public $encodeNames = true;
 
-    ///[v0.0.13 (ADD# scriptOptions, scriptEventOptions)]
     /**
-     * @var array the script options for `jquery.mjs.nestedSortable.js`. The following special options are recognized:
-     *
-     * - selector: string, the selector of the tree container, defaults to "ol.sortable".
-     *
+     * @var array the default client script options for `jquery.mjs.nestedSortable.js`.
      */
-    private $_defaultScriptOptions = [
+    private $_defaultClientOptions = [
         'isTree' => true,
         'startCollapsed' => false,
         'forcePlaceholderSize' => true,
@@ -119,25 +147,16 @@ class TreeView extends Widget
         'tolerance' => 'pointer',
         'toleranceElement' => '> div',
     ];
-    public $scriptOptions = [];
-
-    /**
-     * @var array additional script options that can be passed to the constructor of the treeview js object.
-     */
-    public $scriptEventOptions = [
-        'update' => "function(){ console.log('Relocated item'); }",
-    ];
 
     /**
      * @inheritdoc
      */
     public function init()
     {
-        ///[v0.0.13 (ADD# scriptOptions, scriptEventOptions)]
-        $this->scriptOptions = array_merge($this->_defaultScriptOptions, $this->scriptOptions);
-        foreach($this->scriptEventOptions as $key => $event)
+        $this->clientOptions = array_merge($this->_defaultClientOptions, $this->clientOptions);
+        foreach($this->clientEventOptions as $key => $event)
         {
-            $this->scriptOptions[$key] = new JsExpression($event);
+            $this->clientOptions[$key] = new JsExpression($event);
         }
     }
 
@@ -146,48 +165,67 @@ class TreeView extends Widget
      */
     public function run()
     {
-        $this->registerScript();
-        $this->renderButtons();
-        return $this->renderNodes($this->nodes);
+        $this->registerClient();
+        return $this->renderTree();
     }
 
     /**
-     * Renders buttons.
+     * Registers client script.
      */
-    protected function renderButtons()
-    {
-        // echo Html::beginTag('div', ['class' => "{$this->id}-nestable-menu"]);
-        echo Html::beginTag('div', ['class' => "nestable-menu"]);
-        echo Html::beginTag('div', ['class' => 'btn-group']);
-        echo Html::button('Add node', [
-            'data-action' => 'action-create',
-            'class' => 'btn btn-success'
-        ]);
-        echo Html::button('Collapse all', [
-            'id' => 'collapse-all',
-            'class' => 'btn btn-default',
-            'style' => 'display: none',//////////???????
-        ]);
-        echo Html::button('Expand all', [
-            'id' => 'expand-all',
-            'class' => 'btn btn-default',
-            // 'style' => 'display: none',//////////???????
-        ]);
-        echo Html::endTag('div');
-        echo Html::endTag('div');
-    }
-
-    /**
-     * Registers script.
-     */
-    protected function registerScript()
+    protected function registerClient()
     {
         $view = $this->getView();
         TreeViewAsset::register($view);
 
-        ///[v0.0.13 (ADD# scriptOptions, scriptEventOptions)]
-        $selector = ArrayHelper::remove($this->scriptOptions, 'selector', 'ol.sortable');
-        $view->registerJs("$('{$selector}').nestedSortable(" . Json::encode($this->scriptOptions) . ");");
+        $selector = ArrayHelper::remove($this->clientOptions, 'selector', 'ol.sortable');
+        $view->registerJs("$('{$selector}').nestedSortable(" . Json::htmlEncode($this->clientOptions) . ");");
+    }
+
+    /**
+     * Renders the tree.
+     */
+    protected function renderTree()
+    {
+        $lines = [];
+
+        $tag = ArrayHelper::remove($this->options, 'tag', 'div');
+        $lines[] = Html::beginTag($tag, $this->options);
+
+        $lines[] = $this->renderToolbar();
+        $lines[] = $this->renderNodes($this->nodes);
+
+        $lines[] = Html::endTag($tag);
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Renders the toolbar.
+     */
+    protected function renderToolbar()
+    {
+        $lines = [];
+
+        $lines[] = Html::beginTag('div', ['class' => 'btn-group']);
+
+        $lines[] = Html::button('Add node', [
+            'data-action' => 'action-add-node',
+            'class' => 'btn btn-success'
+        ]);
+        $lines[] = Html::button('Collapse all', [
+            'id' => 'collapse-all',
+            'class' => 'btn btn-default',
+            'style' => $this->clientOptions['startCollapsed'] ? 'display: none' : 'display: block',
+        ]);
+        $lines[] = Html::button('Expand all', [
+            'id' => 'expand-all',
+            'class' => 'btn btn-default',
+            'style' => $this->clientOptions['startCollapsed'] ? 'display: block' : 'display: none',
+        ]);
+
+        $lines[] = Html::endTag('div');
+
+        return implode("\n", $lines);
     }
 
     /**
@@ -198,17 +236,11 @@ class TreeView extends Widget
     protected function renderNodes($nodes)
     {
         $lines = [];
+
         if (!empty($nodes)) {
 
-            ///[v0.0.8 (container tag and options)]
-            $htmlOptions = $this->htmlOptions;
-            $tag = ArrayHelper::remove($htmlOptions, 'tag', 'ol');
-            if (empty($htmlOptions['class'])) {
-                $htmlOptions['class'] = 'sortable';
-            } else {
-                $htmlOptions['class'] .= ' sortable';
-            }
-            $lines[] =  Html::beginTag($tag, $htmlOptions);
+            $tag = ArrayHelper::remove($this->nodesOptions, 'tag', 'ol');
+            $lines[] =  Html::beginTag($tag, $this->nodesOptions);
 
             foreach ($nodes as $node) {
                 if (isset($node['visible']) && !$node['visible']) {
@@ -216,6 +248,7 @@ class TreeView extends Widget
                 }
                 $lines[] = $this->renderNode($node);
             }
+
             $lines[] =  Html::endTag($tag); 
         }
 
@@ -239,12 +272,28 @@ class TreeView extends Widget
 
         $lines = [];
 
-        ///[v0.0.7 (node tag and options)]
-        $nodeOptions = array_merge(['id' => $node['id']], $this->nodeOptions, ArrayHelper::getValue($node, 'options', []));
+        $nodeOptions = array_merge([
+            'data-id' => $node['id'],
+            'data-update-url' => Url::to(['update', 'id' => $node['id']]),
+        ], $this->nodeOptions, ArrayHelper::getValue($node, 'options', []));
         $tag = ArrayHelper::remove($nodeOptions, 'tag', 'li');
-        $lines[] =  Html::beginTag($tag, $nodeOptions);
+        $lines[] = Html::beginTag($tag, $nodeOptions);
 
-        $lines[] =  Html::tag('div', $this->renderNodeName($node));
+        $lines[] = Html::beginTag('div');
+
+        $lines[] = $this->renderNodeName($node);
+
+        $lines[] = Html::beginTag('span', ['class' => 'pull-right']);
+        $lines[] = Html::a(FA::i(FA::_PENCIL), ['update', 'id' => $node['id']], ['class' => 'btn btn-xs btn-primary']);
+        $lines[] = Html::a(FA::i(FA::_PLUS), ['create', 'parent_id' => $node['id']], ['class' => 'btn btn-xs btn-success']);
+        $lines[] = Html::a(FA::i(FA::_TRASH), ['delete', 'id' => $node['id']], [
+            'data' => ['confirm' => Yii::t('app', 'Are you sure you want to delete this item?'), 'method' => 'post',],
+            'class' => 'btn btn-xs btn-danger'
+        ]);
+        $lines[] =  Html::endTag('span');
+
+        $lines[] =  Html::endTag('div');
+
         if (!empty($node['nodes'])) {
             $lines[] =  $this->renderNodes($node['nodes']);
         }
