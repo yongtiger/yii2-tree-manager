@@ -5,6 +5,9 @@
 [![Latest Unstable Version](https://poser.pugx.org/yongtiger/yii2-tree-manager/v/unstable)](https://packagist.org/packages/yongtiger/yii2-tree-manager)
 [![License](https://poser.pugx.org/yongtiger/yii2-tree-manager/license)](https://packagist.org/packages/yongtiger/yii2-tree-manager)
 
+![](docs/demo.jpg)
+
+
 ## FEATURES
 
 * Sample of extensions directory structure. `src`, `docs`, etc.
