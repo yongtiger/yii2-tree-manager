@@ -132,6 +132,53 @@ echo \yongtiger\tree\widgets\TreeView::widget([
 
 ## REFERENCES
 
+### Example of TreeView nodes data ($items):
+
+```php
+Array(
+    [0] => Array(
+        [id] => 1
+        [name] => node 1
+
+        ///optional, action urls
+        [view-url] => Array(
+            [0] => category/default/view
+            [id] => 1
+        )
+        [update-url] => Array(
+            [0] => category/default/update
+            [id] => 1
+        )
+        [create-url] => Array(
+            [0] => category/default/create
+            [id] => 1
+        )
+        [delete-url] => Array(
+            [0] => category/default/delete
+            [id] => 1
+        )
+
+        [nodes] => Array(
+            [0] => Array(
+                [id] => 2
+                [name] => node 1.1
+                // optional, action urls ...
+            )
+            [1] => Array(
+                [id] => 3
+                [name] => node 1.2
+                // optional, action urls ...
+            )
+            // more nodes ...
+        )
+    )
+    [1] => Array(
+        // ...
+    )
+)
+```
+
+
 ### Example of `nestedSortable` html code:
 
 ```
