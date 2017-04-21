@@ -44,7 +44,7 @@ to the require section of your composer.json.
 echo \yongtiger\tree\widgets\TreeView::widget([
     'nodes' => $items,
 
-    ///all thefollowing are optional
+    ///all the followings are optional
     'options' => [
         'tag' => 'div',         ///set to false to disable the tag
         'class' => 'myclass',
