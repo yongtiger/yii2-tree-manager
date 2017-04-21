@@ -42,21 +42,84 @@ to the require section of your composer.json.
 
 ```php
 echo \yongtiger\tree\widgets\TreeView::widget([
-    'nodes' => $menuItems,
-    'htmlOptions' => [  ///optional
-        'tag' => 'ol',
+    'nodes' => $items,
+
+    ///all thefollowing are optional
+    'options' => [
+        'tag' => 'div',         ///set to false to disable the tag
         'class' => 'myclass',
+        // more ...
     ],
-    'nodeOptions' => [  ///optional
-        'tag' => 'li',
+    'nodesOptions' => [
+        'tag' => 'ol',          ///set to false to disable the tag
         'class' => 'myclass',
+        // more ...
     ],
-    'scriptOptions' => [    ///optional
+    'nodeOptions' => [
+        'tag' => 'li',          ///set to false to disable the tag
+        'class' => 'myclass',
+        // more ...
+    ],
+
+    'clientOptions' => [
+        'selector' => 'ol.sortable',
         'startCollapsed' => true,
+        // more ...
     ],
-    'scriptEventOptions' => [ ///optional
+    'clientEventOptions' => [
         'change' => "function(){ console.log('Relocated item'); }",
+        // more ...
     ],
+
+    'nodeActionsOptions' => [
+        'tag' => 'span',        ///set to false to disable the tag
+        'class' => 'myclass',
+        // more ...
+    ],
+    'nodeActionOptions' => [
+        'tag' => 'button',      ///set to false to disable the tag
+        // more ...
+    ],
+    'nodeActions' => [
+        'view' => [
+            'actionText' => '<span class="glyphicon glyphicon-eye-open"></span>',
+            'actionOptions' => [
+                'class' => 'btn btn-xs btn-default',
+            ],
+        ],
+        'update' => [
+            'actionText' => '<span class="glyphicon glyphicon-pencil"></span>',
+            'actionOptions' => [
+                'class' => 'btn btn-xs btn-primary',
+            ],
+        ],
+        'create' => [
+            'actionText' => '<span class="glyphicon glyphicon-plus"></span>',
+            'actionOptions' => [
+                'class' => 'btn btn-xs btn-success',
+            ],
+        ],
+        'delete' => [
+            'actionText' => '<span class="glyphicon glyphicon-trash"></span>',
+            'actionOptions' => [
+                'class' => 'btn btn-xs btn-primary',
+                'data-confirm' => 'Are you sure you want to delete this item?', ///???i18n
+                'data-method' => 'post',
+                ///for ajax
+                'href' => 'javascript:void(0)',         ///Note: It will override the 'href' of `nodeActionOptions`
+                'data-action-url' => '{action-url}',    ///Note: It will be replaced with the URL created using [[createUrl()]]
+            ],
+        ],
+        // more ...
+    ],
+
+    'urlCreator' => function ($action, $id, $treeView) {
+        // return 'string';
+    },
+    'controller' => 'category/default',
+    
+    'nodeNameTemplate' => '<span class="disclose"><span></span></span>{name}',
+    'encodeNodeNames' => true,
 ]);
 ```
 
