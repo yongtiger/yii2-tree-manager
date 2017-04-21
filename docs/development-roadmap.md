@@ -1,5 +1,11 @@
 # Development roadmap
 
+## v0.0.17 (ADD# node move action)
+
+* `\widgets\TreeView.php`
+* `\assets\js\tree-view.js`
+
+
 ## v0.0.16 (re-organize)
 
 * `\widgets\TreeView.php`

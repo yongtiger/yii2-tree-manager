@@ -41,7 +41,7 @@ class TreeView extends Widget
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = [];
+    public $options = ['id' => 'tree-view'];
 
     /**
      * @var array the client script options for `jquery.mjs.nestedSortable.js`. The following special options are recognized:
@@ -55,7 +55,7 @@ class TreeView extends Widget
      * @var array additional client event options that can be passed to the constructor of the treeview js object.
      */
     public $clientEventOptions = [
-        'update' => "function(){ console.log('Relocated item'); }",
+        'update' => 'update',   ///[node move action] call update function in `tree.js`. You can configure it to override your update logic.
     ];
 
     /**
@@ -123,6 +123,8 @@ class TreeView extends Widget
 
     /**
      * @var array the node actions.
+     *
+     * Note: Configure move action by `clientEventOptions` and handled in `renderNode()`. ///[node move action]
      */
     public $nodeActions = [
         'view' => [
@@ -146,7 +148,7 @@ class TreeView extends Widget
         'delete' => [
             'actionText' => '<span class="glyphicon glyphicon-trash"></span>',
             'actionOptions' => [
-                'class' => 'btn btn-xs btn-primary',
+                'class' => 'btn btn-xs btn-danger',
                 'data-confirm' => 'Are you sure you want to delete this item?', ///???i18n
                 'data-method' => 'post',
                 ///for ajax
@@ -191,6 +193,23 @@ class TreeView extends Widget
     public $encodeNodeNames = true;
 
     /**
+     * @var array the HTML attributes for the [loading] tag. The following special options are recognized:
+     *
+     * - tag: string, defaults to "div", the tag name of the [loading] tags. 
+     *   Set to false to disable [loading] tag.
+     *   See also [[\yii\helpers\Html::tag()]].
+     *
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $loadingOptions = [
+        'id' => 'loading',
+        'class' => 'loading',
+        'aria-label' => 'Loading',
+        'role' => 'img',
+        'tabindex' => '-1',
+    ];
+
+    /**
      * @var array the default client script options for `jquery.mjs.nestedSortable.js`.
      * @see https://github.com/ilikenwf/nestedSortable/blob/master/jquery.mjs.nestedSortable.js#L35
      */
@@ -226,6 +245,7 @@ class TreeView extends Widget
     public function run()
     {
         $this->registerClient();
+        $this->renderLoading();
         return $this->renderTree();
     }
 
@@ -238,7 +258,24 @@ class TreeView extends Widget
         TreeViewAsset::register($view);
 
         $selector = ArrayHelper::remove($this->clientOptions, 'selector', 'ol.sortable');
-        $view->registerJs("$('{$selector}').nestedSortable(" . Json::htmlEncode($this->clientOptions) . ");");
+        $view->registerJs("ns = $('{$selector}').nestedSortable(" . Json::htmlEncode($this->clientOptions) . ");");
+
+        $treeView = $this->options['id'];
+        $loading = $this->loadingOptions['id'];
+        $view->registerJs(<<<JS
+treeView = $('#{$treeView}');
+loading = $('#{$loading}');
+JS
+        );
+    }
+
+    /**
+     * Renders loading.
+     */
+    protected function renderLoading()
+    {
+        $tag = ArrayHelper::remove($this->loadingOptions, 'tag', 'div');
+        echo Html::tag($tag, '', $this->loadingOptions);
     }
 
     /**
@@ -270,7 +307,10 @@ class TreeView extends Widget
 
         $lines[] = Html::beginTag('div', ['class' => 'btn-group']);
 
+        $title = Yii::t('yii', 'Create a root node');
         $lines[] = Html::button('Create node', [
+            'title' => $title,
+            'aria-label' => $title,
             'data-action-name' => 'create',
             'class' => 'btn btn-success',
             'onclick' => '{location.href="' . $this->createUrl('create') . '"}',
@@ -339,6 +379,8 @@ class TreeView extends Widget
         $nodeOptions = array_merge([
             'data-node-id' => $node['id'],
             'data-node-name' => Html::encode($node['name']),
+            'data-action-name' => 'move',   ///[node move action]
+            'data-action-url' => Url::to(ArrayHelper::getValue($node, 'move-url', $this->createUrl('move', $node))),
             // more node data ...
         ], $this->nodeOptions, ArrayHelper::getValue($node, 'options', []));
         $tag = ArrayHelper::remove($nodeOptions, 'tag', 'li');

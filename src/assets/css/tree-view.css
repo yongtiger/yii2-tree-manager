@@ -1,4 +1,4 @@
-.placeholder {
+.sortable .placeholder {
     outline: 1px dashed #4183C4;
 }
 ol {
@@ -49,7 +49,7 @@ ol.sortable {
 }
 .disclose {
     cursor: pointer;
-    width: 10px;
+    width: 30px;
     display: none;
 }
 .sortable li.mjs-nestedSortable-collapsed > ol {
@@ -59,9 +59,20 @@ ol.sortable {
     display: inline-block;
 }
 .sortable li.mjs-nestedSortable-collapsed > div > .disclose > span:before {
-    content:'+ ';
+    content:'[ + ]';
 }
 .sortable li.mjs-nestedSortable-expanded > div > .disclose > span:before {
-    content:'- ';
+    content:'[ - ]';
 }
-
+.loading {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #fff url("../images/loading.gif") no-repeat center center;
+  opacity: .75;
+  filter: alpha(opacity=75);
+  z-index: 20170428;
+}
