@@ -124,7 +124,7 @@ class TreeView extends Widget
     /**
      * @var array the node actions.
      *
-     * Note: Configure move action by `clientEventOptions` and handled in `renderNode()`. ///[node move action]
+     * Note: Configure `move action` in tree's `clientEventOptions` and handle in `renderNode()`. ///[node move action]
      */
     public $nodeActions = [
         'view' => [
