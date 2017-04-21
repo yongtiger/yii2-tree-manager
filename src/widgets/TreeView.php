@@ -25,32 +25,6 @@ use yongtiger\tree\TreeViewAsset;
 
 /**
  * Class TreeView
- *
- * Usages:
- *
- * ```php
- * echo \yongtiger\tree\widgets\TreeView::widget([
- *     'nodes' => $menuItems,
- *     'options' => [  ///optional
- *         'tag' => 'div',
- *         'class' => 'myclass',
- *     ],
- *     'nodesOptions' => [  ///optional
- *         'tag' => 'ol',
- *         'class' => 'myclass',
- *     ],
- *     'nodeOptions' => [  ///optional
- *         'tag' => 'li',
- *         'class' => 'myclass',
- *     ],
- *     'clientOptions' => [    ///optional
- *         'startCollapsed' => true,
- *     ],
- *     'clientEventOptions' => [ ///optional
- *         'change' => "function(){ console.log('Relocated item'); }",
- *     ],
- * ]);
- * ```
  * 
  * @see https://github.com/ilikenwf/nestedSortable
  * @see http://jsfiddle.net/vq9dD/2/
@@ -61,7 +35,8 @@ class TreeView extends Widget
     /**
      * @var array the HTML attributes for the tree's container tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "div", the tag name of the node container tags. Set to false to disable container tag.
+     * - tag: string, defaults to "div", the tag name of the node container tags. 
+     *   Set to false to disable container tag.
      *   See also [[\yii\helpers\Html::tag()]].
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
@@ -77,46 +52,131 @@ class TreeView extends Widget
     public $clientOptions = [];
 
     /**
-     * @var array additional client options that can be passed to the constructor of the treeview js object.
+     * @var array additional client event options that can be passed to the constructor of the treeview js object.
      */
     public $clientEventOptions = [
         'update' => "function(){ console.log('Relocated item'); }",
     ];
 
     /**
-     * @var array list of nodes in the TreeView widget. Each array element represents a single
+     * @var array list of nodes in the [TreeView] widget. Each array element represents a single
      * tree node which can be either a string or an array with the following structure:
      *
      * - name: string, required, the node name.
      * - visible: boolean, optional, whether this node is visible. Defaults to true.
      * - nodes: array|string, optional, the nodes array, or a string representing the node name.
-     * - encode: boolean, optional, whether the node name will be HTML-encoded. If set, supersedes the $encodeNames option for only this node.
+     * - encode: boolean, optional, whether the node name will be HTML-encoded. If set, supersedes the $encodeNodeNames option for only this node.
      */
     public $nodes = [];
 
     /**
-     * @var array the HTML attributes for the tree's nodes tag. The following special options are recognized:
+     * @var array the HTML attributes for the tree's [nodes] tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "ol", the tag name of the node container tags. Set to false to disable container tag.
+     * - tag: string, defaults to "ol", the tag name of the [nodes] tags. 
+     *   Set to false to disable [nodes] tag.
      *   See also [[\yii\helpers\Html::tag()]].
-     * - class: string, defaults to "sortable", the class name of the nodes tags.
+     * - class: string, defaults to "sortable", the class name of the [nodes] tags.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $nodesOptions = ['tag' => 'ol', 'class' => 'sortable'];
 
     /**
-     * @var array list of HTML attributes shared by all tree [[nodes]]. If any individual node
+     * @var array list of HTML attributes shared by all tree nodes. If any individual node
      * specifies its `options`, it will be merged with this property before being used to generate the HTML
-     * attributes for the node tag. The following special options are recognized:
+     * attributes for the [node] tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "li", the tag name of the node container tags.
-     *   Set to false to disable container tag.
+     * - tag: string, defaults to "li", the tag name of the [node] tags.
+     *   Set to false to disable [node] tag.
      *   See also [[\yii\helpers\Html::tag()]].
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $nodeOptions = [];
+
+    /**
+     * @var array the HTML attributes for the tree's node [actions] tag. The following special options are recognized:
+     *
+     * - tag: string, defaults to "span", the tag name of the node [actions] tags. 
+     *   Set to false to disable [actions] tag.
+     *   See also [[\yii\helpers\Html::tag()]].
+     *
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $nodeActionsOptions = ['class' => 'pull-right'];
+
+    /**
+     * @var array the HTML attributes for the tree's node [actions] tag. The following special options are recognized:
+     *
+     * - tag: string, defaults to "span", the tag name of the node [actions] tags. 
+     *   Set to false to disable [actions] tag.
+     *   See also [[\yii\helpers\Html::tag()]].
+     *
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     *
+     * Note: `nodeActionOptions` will be orverriden by the individual `actionOptions` of `nodeActions`.
+     */
+    public $nodeActionOptions = [
+        'tag' => 'a',
+        'href' => '{action-url}',   ///it will be replaced with the URL created using [[createUrl()]]
+    ];
+
+    /**
+     * @var array the node actions.
+     */
+    public $nodeActions = [
+        'view' => [
+            'actionText' => '<span class="glyphicon glyphicon-eye-open"></span>',
+            'actionOptions' => [
+                'class' => 'btn btn-xs btn-default',
+            ],
+        ],
+        'update' => [
+            'actionText' => '<span class="glyphicon glyphicon-pencil"></span>',
+            'actionOptions' => [
+                'class' => 'btn btn-xs btn-primary',
+            ],
+        ],
+        'create' => [
+            'actionText' => '<span class="glyphicon glyphicon-plus"></span>',
+            'actionOptions' => [
+                'class' => 'btn btn-xs btn-success',
+            ],
+        ],
+        'delete' => [
+            'actionText' => '<span class="glyphicon glyphicon-trash"></span>',
+            'actionOptions' => [
+                'class' => 'btn btn-xs btn-primary',
+                'data-confirm' => 'Are you sure you want to delete this item?', ///???i18n
+                'data-method' => 'post',
+                ///for ajax
+                'href' => 'javascript:void(0)', ///Note: It will override the 'href' of `nodeActionOptions`
+                'data-action-url' => '{action-url}',   ///it will be replaced with the URL created using [[createUrl()]]
+            ],
+        ],
+    ];
+
+    /**
+     * @var string the ID of the controller that should handle the actions specified here.
+     * If not set, it will use the currently active controller. This property is mainly used by
+     * [[urlCreator]] to create URLs for different actions. The value of this property will be prefixed
+     * to each action name to form the route of the action.
+     */
+    public $controller;
+
+    /**
+     * @var callable a callback that creates a button URL.
+     * The signature of the callback should be the same as that of [[createUrl()]].
+     *
+     * ```php
+     * function (string $action, integer $id, TreeView $this) {
+     *     //return string;
+     * }
+     * ```
+     *
+     * If this property is not set, button URLs will be created using [[createUrl()]].
+     */
+    public $urlCreator;
 
     /**
      * @var string the template used to render a node name.
@@ -128,10 +188,11 @@ class TreeView extends Widget
     /**
      * @var boolean whether the node names should be HTML-encoded.
      */
-    public $encodeNames = true;
+    public $encodeNodeNames = true;
 
     /**
      * @var array the default client script options for `jquery.mjs.nestedSortable.js`.
+     * @see https://github.com/ilikenwf/nestedSortable/blob/master/jquery.mjs.nestedSortable.js#L35
      */
     private $_defaultClientOptions = [
         'isTree' => true,
@@ -182,6 +243,7 @@ class TreeView extends Widget
 
     /**
      * Renders the tree.
+     * @return string the rendering result.
      */
     protected function renderTree()
     {
@@ -200,6 +262,7 @@ class TreeView extends Widget
 
     /**
      * Renders the toolbar.
+     * @return string the rendering result.
      */
     protected function renderToolbar()
     {
@@ -207,9 +270,10 @@ class TreeView extends Widget
 
         $lines[] = Html::beginTag('div', ['class' => 'btn-group']);
 
-        $lines[] = Html::button('Add node', [
-            'data-action' => 'action-add-node',
-            'class' => 'btn btn-success'
+        $lines[] = Html::button('Create node', [
+            'data-action-name' => 'create',
+            'class' => 'btn btn-success',
+            'onclick' => '{location.href="' . $this->createUrl('create') . '"}',
         ]);
         $lines[] = Html::button('Collapse all', [
             'id' => 'collapse-all',
@@ -238,8 +302,9 @@ class TreeView extends Widget
 
         if (!empty($nodes)) {
 
-            $tag = ArrayHelper::remove($this->nodesOptions, 'tag', 'ol');
-            $lines[] =  Html::beginTag($tag, $this->nodesOptions);
+            $nodesOptions = $this->nodesOptions;
+            $tag = ArrayHelper::remove($nodesOptions, 'tag', 'ol');
+            $lines[] =  Html::beginTag($tag, $nodesOptions);
 
             foreach ($nodes as $node) {
                 if (isset($node['visible']) && !$node['visible']) {
@@ -272,17 +337,18 @@ class TreeView extends Widget
         $lines = [];
 
         $nodeOptions = array_merge([
-            'data-id' => $node['id'],
-            'data-update-url' => Url::to(['update', 'id' => $node['id']]),
+            'data-node-id' => $node['id'],
+            'data-node-name' => Html::encode($node['name']),
+            // more node data ...
         ], $this->nodeOptions, ArrayHelper::getValue($node, 'options', []));
         $tag = ArrayHelper::remove($nodeOptions, 'tag', 'li');
+
         $lines[] = Html::beginTag($tag, $nodeOptions);
 
         $lines[] = Html::beginTag('div');
 
         $lines[] = $this->renderNodeName($node);
-
-        $lines[] = $this->renderButtons($node);
+        $lines[] = $this->renderNodeActions($node);
 
         $lines[] = Html::endTag('div');
 
@@ -296,41 +362,92 @@ class TreeView extends Widget
     }
 
     /**
-     * Renders buttons.
-     * @param array $node
-     * @return string
-     */
-    protected function renderButtons($node)
-    {
-        $lines = [];
-
-        $lines[] = Html::beginTag('span', ['class' => 'pull-right']);
-
-        $lines[] = Html::a(Html::tag('span', '', ['class' => "glyphicon glyphicon-pencil"]), ['update', 'id' => $node['id']], ['class' => 'btn btn-xs btn-primary']);
-        $lines[] = Html::a(Html::tag('span', '', ['class' => "glyphicon glyphicon-plus"]), ['create', 'parent_id' => $node['id']], ['class' => 'btn btn-xs btn-success']);
-        $lines[] = Html::a(Html::tag('span', '', ['class' => "glyphicon glyphicon-trash"]), ['delete', 'id' => $node['id']], [
-            'data' => ['confirm' => Yii::t('app', 'Are you sure you want to delete this item?'), 'method' => 'post'],
-            'class' => 'btn btn-xs btn-danger',
-        ]);
-
-        $lines[] =  Html::endTag('span');
-
-        return implode("\n", $lines);
-    }
-
-    /**
      * Renders a node name.
      * @param array $node
-     * @return string
+     * @return string the rendering result.
      */
     protected function renderNodeName($node)
     {
-        $encodeName = isset($node['encode']) ? $node['encode'] : $this->encodeNames;
+        $encodeName = isset($node['encode']) ? $node['encode'] : $this->encodeNodeNames;
         $name = $encodeName ? Html::encode($node['name']) : $node['name'];
 
         $template = ArrayHelper::getValue($node, 'template', $this->nodeNameTemplate);
         return strtr($template, [
             '{name}' => $name,
         ]);
+    }
+
+    /**
+     * Renders node actions.
+     * @param array $node
+     * @return string the rendering result.
+     */
+    protected function renderNodeActions($node)
+    {
+        $lines = [];
+
+        $nodeActionsOptions = $this->nodeActionsOptions;
+        $tag = ArrayHelper::remove($nodeActionsOptions, 'tag', 'span');
+        $lines[] = Html::beginTag($tag, $nodeActionsOptions);
+
+        foreach ($this->nodeActions as $actionName => $actionValue) {
+            $lines[] = $this->renderNodeAction($node, $actionName, $actionValue);
+        }
+
+        $lines[] =  Html::endTag($tag);
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Renders a node action.
+     * @param array $node
+     * @param string $actionName
+     * @param array $actionValue Array of a node action.
+     * @return string the rendering result.
+     */
+    protected function renderNodeAction($node, $actionName, $actionValue)
+    {
+        $lines = [];
+
+        $nodeActionOptions = $this->nodeActionOptions;
+        $tag = ArrayHelper::remove($nodeActionOptions, 'tag', 'a');
+
+        $title = Yii::t('yii', ucfirst($actionName));
+        $options = array_merge([
+            'title' => $title,
+            'aria-label' => $title,
+            'data-node-id' => $node['id'],
+            'data-action-name' => "{$actionName}",
+        ], $nodeActionOptions, $actionValue['actionOptions']);
+
+        foreach ($options as $key => $option) {
+            $options[$key] = strtr($option, [
+                '{action-url}' => Url::to(ArrayHelper::getValue($node, $actionName . '-url', $this->createUrl($actionName, $node))),
+            ]);
+        }
+
+        $lines[] = Html::tag($tag, $actionValue['actionText'], $options);
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Creates a URL for the given action and node id.
+     * @see http://www.yiiframework.com/doc-2.0/yii-grid-actioncolumn.html
+     * @param string $actionName the action name (or action ID).
+     * @param array $node will be null while creating node (root node) from toolbar.
+     * @return string the created URL.
+     */
+    protected function createUrl($actionName, $node = null)
+    {
+        if (isset($node) && is_callable($this->urlCreator)) {
+            return call_user_func($this->urlCreator, $node, $actionName, $this);
+        } else {
+            $params = isset($node) ? ['id' => (string) $node['id']] : [];
+            $params[0] = $this->controller ? $this->controller . '/' . $actionName : $actionName;
+
+            return Url::toRoute($params);
+        }
     }
 }
