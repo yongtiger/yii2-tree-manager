@@ -24,7 +24,7 @@ use yii\web\Response;
 class MoveAction extends BaseAction
 {
     /**
-     * Moves a node by given `parent_id`, `prev_id` and `next_id`.
+     * Moves a node by given nodes with `parent_id`, `prev_id` and `next_id`.
      *
      * @param integer $id the primary key of the moved node
      * @return array
