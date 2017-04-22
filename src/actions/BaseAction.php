@@ -31,6 +31,11 @@ abstract class BaseAction extends Action
     public $modelClass;
 
     /**
+     * @var bool
+     */
+    public $isMultipleTree = true;  ///[isMultipleTree]
+
+    /**
      * @throws InvalidConfigException
      */
     public function init()

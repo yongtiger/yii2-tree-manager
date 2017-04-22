@@ -44,8 +44,19 @@ class MoveAction extends BaseAction
 
                 try {
                     if (empty($parentId)) {
-                        ///?????multiple-tree
-                        // ...
+                        if ($this->isMultipleTree) {    ///[isMultipleTree]
+                            if (!$model->isRoot()) {
+                                $result = $model->makeRoot();
+                            }
+
+                            ///?????root sorting logic
+
+                        } else {
+                            return [
+                                'status' => 'error',
+                                'error' => 'Tree root operations are protected when "isMultipleTree" is false!',
+                            ];
+                        }
                     } elseif (!empty($prevId)) {
                         $prevModel = $this->findModel($prevId);
                         $result = $model->insertAfter($prevModel);
@@ -63,7 +74,7 @@ class MoveAction extends BaseAction
                     ];
                 }
 
-                ///Note: remove save() when using creocoder/yii2-nested-sets!
+                ///Note: remove `save()` when using `creocoder/yii2-nested-sets`!
                 return is_bool($result) ? $result : $result->save();
             }
         }
