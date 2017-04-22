@@ -48,18 +48,10 @@ class MoveAction extends BaseAction
                         // ...
                     } elseif (!empty($prevId)) {
                         $prevModel = $this->findModel($prevId);
-                        if ($prevModel->isRoot()) {
-                            $result = $model->appendTo($prevModel);
-                        } else {
-                            $result = $model->insertAfter($prevModel);
-                        }
+                        $result = $model->insertAfter($prevModel);
                     } elseif (!empty($nextId)) {
                         $nextModel = $this->findModel($nextId);
-                        if ($nextModel->isRoot()) {
-                            $result = $model->prepend($nextModel);
-                        } else {
-                            $result = $model->insertBefore($nextModel);
-                        }
+                        $result = $model->insertBefore($nextModel);
                     } else {
                         $parentModel = $this->findModel($parentId);
                         $result = $model->appendTo($parentModel);
