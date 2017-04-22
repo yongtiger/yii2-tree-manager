@@ -44,9 +44,8 @@ class MoveAction extends BaseAction
 
                 try {
                     if (empty($parentId)) {
-                        ///是否允许multiple-tree
-                        // $parentModel = $this->findModel($parentId);
-                        // $result = $model->appendTo($parentModel);
+                        ///?????multiple-tree
+                        // ...
                     } elseif (!empty($prevId)) {
                         $prevModel = $this->findModel($prevId);
                         if ($prevModel->isRoot()) {
