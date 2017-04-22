@@ -63,11 +63,6 @@ class MoveAction extends BaseAction
                     } else {
                         $parentModel = $this->findModel($parentId);
                         $result = $model->appendTo($parentModel);
-                    } else {
-                        return [
-                            'status' => 'error',
-                            'error' => 'Invalid arguments!',
-                        ];
                     }
                 } catch (Exception $e) {
                     return [
