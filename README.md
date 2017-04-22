@@ -1,4 +1,4 @@
-# yii2-tree-manager v0.0.17 (ADD# node move action)
+# yii2-tree-manager v0.0.18 (CHG# tree-view.js)
 
 [![Latest Stable Version](https://poser.pugx.org/yongtiger/yii2-tree-manager/v/stable)](https://packagist.org/packages/yongtiger/yii2-tree-manager)
 [![Total Downloads](https://poser.pugx.org/yongtiger/yii2-tree-manager/downloads)](https://packagist.org/packages/yongtiger/yii2-tree-manager) 

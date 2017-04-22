@@ -19,33 +19,62 @@ var ns;
  * Callback functions of nestedSortable.
  */
 function update(e, obj) {
-    treeView.css({opacity: .4});
-    loading.fadeIn();
-    ns.nestedSortable('disable');
-
     var url = obj.item.data('action-url');
     var parent = obj.item.parents('li');
-    var before = obj.item.prev();
+    var prev = obj.item.prev();
+    var next = obj.item.next();
     var data = {
         parent_id: parent.length ? parent.data('node-id') : 0,
-        before_id: before.length ? before.data('node-id') : 0
+        prev_id: prev.length ? prev.data('node-id') : 0,
+        next_id: next.length ? next.data('node-id') : 0
     };
 
+    ///Deprecation Notice: The jqXHR.success(), jqXHR.error(), 
+    ///and jqXHR.complete() callbacks are removed as of jQuery 3.0. 
+    ///You can use jqXHR.done(), jqXHR.fail(), and jqXHR.always() instead.
+    ///@see http://api.jquery.com/jQuery.ajax
     jQuery.ajax({
         url: url,
         method: 'post',
         data: data,
-        success: function () {
+        beforeSend: function(jqXHR, settings) {
+            treeView.css({opacity: .4});
+            loading.fadeIn();
+            ns.nestedSortable('disable');
+        },
+        success: function(data, textStatus, jqXHR) {
+            if (data.status == 'error') {
+                ns.nestedSortable('cancel');    ///restore orignal sort node list if error
+                alert(data.error);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            ns.nestedSortable('cancel');    ///restore orignal sort node list if error
+
+            ///@see http://stackoverflow.com/questions/6792878/jquery-ajax-error-function
+            var msg = '';
+            if (jqXHR.status === 0) {
+                msg = 'Not connect.\n Verify Network.';
+            } else if (jqXHR.status == 404) {
+                msg = 'Requested page not found. [404]';
+            } else if (jqXHR.status == 500) {
+                msg = 'Internal Server Error [500].';
+            } else if (exception === 'parsererror') {
+                msg = 'Requested JSON parse failed.';
+            } else if (exception === 'timeout') {
+                msg = 'Time out error.';
+            } else if (exception === 'abort') {
+                msg = 'Ajax request aborted.';
+            } else {
+                msg = 'Uncaught Error.\n' + jqXHR.responseText;
+            }
+            alert(msg);
+        },
+        complete: function(jqXHR, textStatus) {
             ns.nestedSortable('enable');
             loading.fadeOut();
             treeView.css({opacity: 1});
         },
-        error: function () {
-            ns.nestedSortable('cancel');    ///restore orignal sort node list if error
-            ns.nestedSortable('enable');
-            loading.fadeOut();
-            treeView.css({opacity: 1});
-        }
     });
 };
 
