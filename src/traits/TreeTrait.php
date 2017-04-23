@@ -120,4 +120,31 @@ trait TreeTrait
 
         return $getChildren($rootId, $depth);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        if ($insert) {
+
+            /*
+             * BUG# makeRoot() in `creocoder/yii2-nested-sets` runs AR's save().
+             * public function makeRoot($runValidation = true, $attributes = null)
+             * {
+             *     $this->operation = self::OPERATION_MAKE_ROOT;
+             *     return $this->owner->save($runValidation, $attributes);
+             * }
+             *
+             * @see https://github.com/creocoder/yii2-nested-sets/blob/master/src/NestedSetsBehavior.php#L79
+             * FIX: Sets an invalid scenario to stop saving in `creocoder/yii2-nested-sets`.
+             */
+            $this->scenario = 'invalid-scenario';
+            try {
+                $this->makeRoot();
+            } catch (\yii\base\InvalidParamException $e) {} ///catch the `InvalidParamException` thrown by [[ActiveRecord]] at line 455
+        }
+
+        return parent::beforeSave($insert);
+    }
 }
