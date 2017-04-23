@@ -139,10 +139,12 @@ trait TreeTrait
              * @see https://github.com/creocoder/yii2-nested-sets/blob/master/src/NestedSetsBehavior.php#L79
              * FIX: Sets an invalid scenario to stop saving in `creocoder/yii2-nested-sets`.
              */
+            $scenario = $this->scenario;
             $this->scenario = 'invalid-scenario';
             try {
                 $this->makeRoot();
             } catch (\yii\base\InvalidParamException $e) {} ///catch the `InvalidParamException` thrown by [[ActiveRecord]] at line 455
+            $this->scenario = $scenario;
         }
 
         return parent::beforeSave($insert);
