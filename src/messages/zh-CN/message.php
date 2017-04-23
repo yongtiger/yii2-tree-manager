@@ -20,4 +20,15 @@
  */
 return [
 
+	///\vendor\yongtiger\yii2-tree-manager\src\widgets\TreeView.php
+	'Create a root node' => '创建根节点',
+	'Create' => '创建',
+	'Collapse all' => '折叠全部',
+	'Expand all' => '展开全部',
+	'View' => '查看',
+	'Update' => '更新',
+	'Create' => '创建',
+	'Delete' => '删除',
+	'Delete All' => '删除全部',
+
 ];

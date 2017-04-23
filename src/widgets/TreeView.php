@@ -22,6 +22,7 @@ use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
 use yii\web\JsExpression;
 use yongtiger\tree\TreeViewAsset;
+use yongtiger\tree\Module;
 
 /**
  * Class TreeView
@@ -149,7 +150,7 @@ class TreeView extends Widget
             'actionText' => '<span class="glyphicon glyphicon-trash"></span>',
             'actionOptions' => [
                 'class' => 'btn btn-xs btn-warning',
-                'data-confirm' => 'Are you sure you want to delete this item?', ///???i18n
+                'data-confirm' => 'Are you sure you want to delete this item?', ///you'd better to use `i18n` in TreeView config
                 'data-method' => 'post',
                 ///for ajax
                 // 'href' => 'javascript:void(0)', ///Note: It will override the 'href' of `nodeActionOptions`
@@ -160,7 +161,7 @@ class TreeView extends Widget
             'actionText' => '<span class="glyphicon glyphicon-trash"></span>',
             'actionOptions' => [
                 'class' => 'btn btn-xs btn-danger',
-                'data-confirm' => 'Are you sure you want to delete this item and its children?', ///???i18n
+                'data-confirm' => 'Are you sure you want to delete this item and its children?', ///you'd better to use `i18n` in TreeView config
                 'data-method' => 'post',
                 ///for ajax
                 // 'href' => 'javascript:void(0)', ///Note: It will override the 'href' of `nodeActionOptions`
@@ -318,20 +319,20 @@ JS
 
         $lines[] = Html::beginTag('div', ['class' => 'btn-group']);
 
-        $title = Yii::t('yii', 'Create a root node');
-        $lines[] = Html::button('Create node', [
+        $title = Module::t('message', 'Create a root node');
+        $lines[] = Html::button(Module::t('message', 'Create'), [
             'title' => $title,
             'aria-label' => $title,
             'data-action-name' => 'create',
             'class' => 'btn btn-success',
             'onclick' => '{location.href="' . $this->createUrl('create') . '"}',
         ]);
-        $lines[] = Html::button('Collapse all', [
+        $lines[] = Html::button(Module::t('message', 'Collapse all'), [
             'id' => 'collapse-all',
             'class' => 'btn btn-default',
             'style' => $this->clientOptions['startCollapsed'] ? 'display: none' : 'display: block',
         ]);
-        $lines[] = Html::button('Expand all', [
+        $lines[] = Html::button(Module::t('message', 'Expand all'), [
             'id' => 'expand-all',
             'class' => 'btn btn-default',
             'style' => $this->clientOptions['startCollapsed'] ? 'display: block' : 'display: none',
@@ -466,7 +467,7 @@ JS
         $nodeActionOptions = $this->nodeActionOptions;
         $tag = ArrayHelper::remove($nodeActionOptions, 'tag', 'a');
 
-        $title = Yii::t('yii', ucwords(implode(' ', explode('-', $actionName))));
+        $title = Module::t('message', ucwords(implode(' ', explode('-', $actionName))));
         $options = array_merge([
             'title' => $title,
             'aria-label' => $title,
