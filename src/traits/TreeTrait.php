@@ -22,6 +22,8 @@ use yongtiger\tree\Module;
  */
 trait TreeTrait
 {
+    public $parentId = 0;
+
     /**
      * @inheritdoc
      */
@@ -142,7 +144,12 @@ trait TreeTrait
             $scenario = $this->scenario;
             $this->scenario = 'invalid-scenario';
             try {
-                $this->makeRoot();
+                if ($this->parentId) {  ///[parentId]
+                    $parentNode = static::findOne($this->parentId);///Sample::findOne(['name' => 'node 1.1']);
+                    $this->appendTo($parentNode);
+                } else {
+                    $this->makeRoot();
+                }
             } catch (\yii\base\InvalidParamException $e) {} ///catch the `InvalidParamException` thrown by [[ActiveRecord]] at line 455
             $this->scenario = $scenario;
         }
