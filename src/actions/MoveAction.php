@@ -13,7 +13,6 @@
 namespace yongtiger\tree\actions;
 
 use Yii;
-use yii\base\Exception;
 use yii\web\Response;
 
 /**
@@ -67,7 +66,7 @@ class MoveAction extends BaseAction
                         $parentModel = $this->findModel($parentId);
                         $result = $model->appendTo($parentModel);
                     }
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     return [
                         'status' => 'error',
                         'error' => $e->getMessage(),

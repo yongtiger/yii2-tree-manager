@@ -60,5 +60,5 @@ class TreeQuery extends ActiveQuery
         } else {
         	throw new InvalidConfigException('The "model" property `leftAttribute` or `parentAttribute` must be set.');
         }
-	}
+    }
 }
