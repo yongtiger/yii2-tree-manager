@@ -152,8 +152,8 @@ class TreeView extends Widget
                 'data-confirm' => 'Are you sure you want to delete this item?', ///???i18n
                 'data-method' => 'post',
                 ///for ajax
-                'href' => 'javascript:void(0)', ///Note: It will override the 'href' of `nodeActionOptions`
-                'data-action-url' => '{action-url}',   ///it will be replaced with the URL created using [[createUrl()]]
+                // 'href' => 'javascript:void(0)', ///Note: It will override the 'href' of `nodeActionOptions`
+                // 'data-action-url' => '{action-url}',   ///it will be replaced with the URL created using [[createUrl()]]
             ],
         ],
     ];

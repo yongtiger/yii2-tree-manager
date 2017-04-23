@@ -1,5 +1,10 @@
 # Development roadmap
 
+## v0.0.23 (CHG# comment nodeActions delete ajax)
+
+* `\widgets\TreeView.php` (154)
+
+
 ## v0.0.22 (ADD# beforeSave:parentId)
 
 * `\traits\TreeTrait.php`
