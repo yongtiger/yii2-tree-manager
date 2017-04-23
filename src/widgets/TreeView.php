@@ -466,7 +466,7 @@ JS
         $nodeActionOptions = $this->nodeActionOptions;
         $tag = ArrayHelper::remove($nodeActionOptions, 'tag', 'a');
 
-        $title = Yii::t('yii', ucfirst($actionName));
+        $title = Yii::t('yii', ucwords(implode(' ', explode('-', $actionName))));
         $options = array_merge([
             'title' => $title,
             'aria-label' => $title,

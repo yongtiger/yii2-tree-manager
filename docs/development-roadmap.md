@@ -3,7 +3,7 @@
 ## v0.0.24 (ADD# TreeView:delete-all action)
 
 
-* `\widgets\TreeView.php` (159)
+* `\widgets\TreeView.php` (159, 259)
 
 
 ## v0.0.23 (CHG# comment nodeActions delete ajax)
