@@ -131,7 +131,7 @@ trait TreeTrait
         if ($insert) {
 
             /*
-             * BUG# makeRoot() in `creocoder/yii2-nested-sets` runs AR's save().
+             * BUG# The node modifications in `creocoder/yii2-nested-sets` runs AR's save(), e.g.:
              * public function makeRoot($runValidation = true, $attributes = null)
              * {
              *     $this->operation = self::OPERATION_MAKE_ROOT;
@@ -145,7 +145,7 @@ trait TreeTrait
             $this->scenario = 'invalid-scenario';
             try {
                 if ($this->parentId) {  ///[parentId]
-                    $parentNode = static::findOne($this->parentId);///Sample::findOne(['name' => 'node 1.1']);
+                    $parentNode = static::findOne($this->parentId);
                     $this->appendTo($parentNode);
                 } else {
                     $this->makeRoot();

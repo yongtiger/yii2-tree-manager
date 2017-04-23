@@ -1,5 +1,11 @@
 # Development roadmap
 
+## v0.0.24 (ADD# TreeView:delete-all action)
+
+
+* `\widgets\TreeView.php` (159)
+
+
 ## v0.0.23 (CHG# comment nodeActions delete ajax)
 
 * `\widgets\TreeView.php` (154)
