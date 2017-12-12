@@ -19,8 +19,7 @@
     "homepage" : "http://www.branbook.cc",
     "require": {
         "php": ">=5.5",
-        "yiisoft/yii2": "*",
-        "creocoder/yii2-nested-sets": "0.9.*"
+        "yiisoft/yii2": "*"
     },
     "autoload": {
         "psr-4": {
