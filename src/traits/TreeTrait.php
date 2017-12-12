@@ -28,11 +28,7 @@ trait TreeTrait
      * @inheritdoc
      */
     public function behaviors() {
-        return array_merge([
-            'tree' => [
-                'class' => \creocoder\nestedsets\NestedSetsBehavior::className(),
-            ],
-        ], Module::instance()->behaviors);
+        return Module::instance()->behaviors;
     }
 
     /**
