@@ -1,5 +1,10 @@
 # Development roadmap
 
+## v0.0.27 (FIX# remove out creocoder\nestedsets from TreeTrait class)
+
+* `\trait\TreeTrait.php` (31)
+
+
 ## v0.0.26 (typo)
 
 
